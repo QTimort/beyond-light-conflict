@@ -19,6 +19,7 @@
     "author": "QTimort",
     "dependencies": {
         "core-js": "^3.6.5",
+        "pixi-viewport": "^4.18.1",
         "pixi.js": "^5.3.6",
         "revolt-fx": "^1.1.1"
     },
