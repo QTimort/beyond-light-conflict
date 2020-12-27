@@ -1,4 +1,6 @@
 import * as PIXI from "pixi.js";
+global.PIXI = PIXI;
+import { FX } from "revolt-fx";
 
 import "./style.css";
 
@@ -11,7 +13,12 @@ const app = new PIXI.Application({
     height: gameHeight,
 });
 
-const stage = app.stage;
+const fx = new FX();
+
+const container = new PIXI.Container();
+const debug = new PIXI.Graphics();
+app.stage.addChild(container);
+app.stage.addChild(debug);
 
 window.onload = async (): Promise<void> => {
     await loadGameAssets();
@@ -20,18 +27,26 @@ window.onload = async (): Promise<void> => {
 
     resizeCanvas();
 
-    const birdFromSprite = getBird();
-    birdFromSprite.anchor.set(0.5, 0.5);
-    birdFromSprite.position.set(gameWidth / 2, gameHeight / 2);
+    const content = new PIXI.Container();
+    content.x = gameWidth * 0.5;
+    content.y = gameWidth * 0.5;
+    app.stage.addChild(content);
 
-    stage.addChild(birdFromSprite);
+    const emitter = fx.getParticleEmitter("plasma-corona");
+    emitter.init(content, true, 1.9);
+
+    app.ticker.add(function (delta) {
+        //Update the RevoltFX instance
+        fx.update(delta);
+    });
 };
 
 async function loadGameAssets(): Promise<void> {
     return new Promise((res, rej) => {
         const loader = PIXI.Loader.shared;
-        loader.add("rabbit", "./assets/simpleSpriteSheet.json");
-
+        loader.add("fx_settings", "./assets/revolt-fx/default-bundle.json");
+        loader.add("fx_spritesheet", "./assets/revolt-fx/spritesheet.json");
+        loader.add("fx_spritesheet_png", "./assets/revolt-fx/spritesheet.png");
         loader.onComplete.once(() => {
             res();
         });
@@ -39,8 +54,13 @@ async function loadGameAssets(): Promise<void> {
         loader.onError.once(() => {
             rej();
         });
-
-        loader.load();
+        loader.load((loader, resources) => {
+            //Init the bundle
+            if (resources === undefined || resources.fx_settings === undefined) {
+                throw Error("resource of fx_settings undefined");
+            }
+            fx.initBundle(resources.fx_settings.data);
+        });
     });
 }
 
@@ -54,19 +74,4 @@ function resizeCanvas(): void {
     resize();
 
     window.addEventListener("resize", resize);
-}
-
-function getBird(): PIXI.AnimatedSprite {
-    const bird = new PIXI.AnimatedSprite([
-        PIXI.Texture.from("birdUp.png"),
-        PIXI.Texture.from("birdMiddle.png"),
-        PIXI.Texture.from("birdDown.png"),
-    ]);
-
-    bird.loop = true;
-    bird.animationSpeed = 0.1;
-    bird.play();
-    bird.scale.set(3);
-
-    return bird;
 }

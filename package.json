@@ -1,7 +1,7 @@
 {
-    "name": "pixi-typescript-boilerplate",
-    "version": "3.0.0",
-    "description": "pixi.js typescript boilerplate webpack",
+    "name": "beyond-light-conflict",
+    "version": "0.0.1",
+    "description": "beyond light conflict",
     "browserslist": "> 0.25%, not dead",
     "scripts": {
         "webpack": "webpack",
@@ -16,11 +16,11 @@
         "lint-check": "npx eslint ./src/**/*.ts",
         "code-style-check": "npm run lint-check && npm run prettier:check"
     },
-    "author": "jkanchelov",
-    "license": "MIT",
+    "author": "QTimort",
     "dependencies": {
         "core-js": "^3.6.5",
-        "pixi.js": "^5.3.6"
+        "pixi.js": "^5.3.6",
+        "revolt-fx": "^1.1.1"
     },
     "devDependencies": {
         "@babel/core": "^7.11.6",
