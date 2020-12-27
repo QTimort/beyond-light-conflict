@@ -5,7 +5,11 @@
         "strict": true,
         "sourceMap": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        // below settings are because build fails when compiling revoltfx
+        "strictPropertyInitialization": false,
+        "strictNullChecks": false,
+        "noImplicitAny": false
     },
     "include": ["./src/index.ts"]
 }

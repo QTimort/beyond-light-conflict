@@ -62,7 +62,7 @@ module.exports = (env: { mode: "development" | "production" }) => {
 
             new webpack.DefinePlugin({
                 PRODUCTION: JSON.stringify(true),
-                VERSION: JSON.stringify("3.0.0"), // TODO Update from package.json
+                VERSION: JSON.stringify("0.0.1"), // TODO Update from package.json
             }),
 
             new webpack.ProgressPlugin(),
