@@ -64,7 +64,7 @@ export class Game {
         this._ships.forEach((s) => {
             this._viewport.addChild(s);
         });
-        this._app.ticker.add(this.gameLoop);
+        this._app.ticker.add((delta) => this.gameLoop(delta));
         this._viewport.on("clicked", () => {
             this._ships[0].fire();
         });
