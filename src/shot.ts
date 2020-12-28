@@ -8,7 +8,15 @@ export class Shot extends Sprite {
     private targetX: number;
     private targetY: number;
     private targetRadius: number;
-    constructor(sourceX: number, sourceY: number, targetX: number, targetY: number, targetRadius: number) {
+    private targetScaleX: number;
+    constructor(
+        sourceX: number,
+        sourceY: number,
+        targetX: number,
+        targetY: number,
+        targetRadius: number,
+        targetScaleX: number
+    ) {
         super();
         PIXI.Sprite.call(this, PIXI.Texture.from("fx-light10"));
         game.shots.push(this);
@@ -20,6 +28,7 @@ export class Shot extends Sprite {
         this.dx = Math.cos(this.rotation);
         this.dy = Math.sin(this.rotation);
         this.targetRadius = targetRadius;
+        this.targetScaleX = targetScaleX;
         this.x = sourceX;
         this.y = sourceY;
 
@@ -42,7 +51,7 @@ export class Shot extends Sprite {
 
         if (dx * dx + dy * dy <= r) {
             const effect = game.fx.getEffectSequence("plasma-shield-hit");
-            effect.init(game.viewport);
+            effect.init(game.viewport, 0, true, this.targetScaleX);
             effect.x = this.targetX;
             effect.y = this.targetY;
             effect.rotation = this.rotation - Math.PI;
