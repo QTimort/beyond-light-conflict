@@ -1,7 +1,9 @@
-import { Sprite } from "pixi.js";
+import { Sprite, Texture } from "pixi.js";
 import { game } from "./index";
+import { Hit } from "./hit";
 
 export class Shot extends Sprite {
+    static shot: Texture = null;
     private speed: number;
     private dx: number;
     private dy: number;
@@ -18,7 +20,10 @@ export class Shot extends Sprite {
         targetScaleX: number
     ) {
         super();
-        PIXI.Sprite.call(this, PIXI.Texture.from("fx-light10"));
+        if (Shot.shot == null) {
+            Shot.shot = PIXI.Texture.from("fx-light10");
+        }
+        PIXI.Sprite.call(this, Shot.shot);
         game.shots.push(this);
 
         this.anchor.set(0.5, 0.5);
@@ -42,19 +47,19 @@ export class Shot extends Sprite {
     }
 
     public update(dt: number): void {
+        const pdx = this.targetX - this.x;
+        const pdy = this.targetY - this.y;
         this.x += this.dx * this.speed * dt;
         this.y += this.dy * this.speed * dt;
 
         const dx = this.targetX - this.x;
         const dy = this.targetY - this.y;
         const r = this.targetRadius * this.targetRadius;
-
-        if (dx * dx + dy * dy <= r) {
-            const effect = game.fx.getEffectSequence("plasma-shield-hit");
-            effect.init(game.viewport, 0, true, this.targetScaleX);
-            effect.x = this.targetX;
-            effect.y = this.targetY;
-            effect.rotation = this.rotation - Math.PI;
+        const oldDistanceSquared = pdx * pdx + pdy * pdy;
+        const distanceSquared = dx * dx + dy * dy;
+        if (distanceSquared <= r || oldDistanceSquared < distanceSquared) {
+            const hit = new Hit(this.targetX, this.targetY, this.rotation, this.targetScaleX);
+            game.viewport.addChild(hit);
             this.dispose();
         }
     }

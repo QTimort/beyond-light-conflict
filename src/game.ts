@@ -4,10 +4,12 @@ import { Viewport } from "pixi-viewport";
 import { Utils } from "./utils";
 import * as PIXI from "pixi.js";
 import { FX } from "revolt-fx";
+import { Hit } from "./hit";
 
 export class Game {
     private readonly _shots: Array<Shot> = [];
     private readonly _ships: Array<Ship> = [];
+    private readonly _hits: Array<Hit> = [];
     private readonly _fx: FX = new FX();
     private _app: PIXI.Application;
     private _viewport: Viewport;
@@ -48,7 +50,7 @@ export class Game {
         await this.loadAssets();
 
         document.body.appendChild(this._app.view);
-        for (let i = 0; i < 1000; ++i) {
+        for (let i = 0; i < 10000; ++i) {
             this._ships.push(
                 new Ship(Utils.getRandomInt(this._viewport.worldWidth), Utils.getRandomInt(this._viewport.worldHeight))
             );
@@ -66,9 +68,12 @@ export class Game {
         });
         this._app.ticker.add((delta) => this.gameLoop(delta));
         this._viewport.on("clicked", () => {
-            this._ships[0].fire();
+            for (let i = 0; i < this._ships.length; i++) {
+                this._ships[i].fire();
+            }
         });
         this._container.addChild(this.fpsText);
+        this._viewport.fit();
     }
 
     private async loadAssets(): Promise<void> {
@@ -104,6 +109,10 @@ export class Game {
         while (n--) {
             this._shots[n].update(delta);
         }
+        n = this._hits.length;
+        while (n--) {
+            this._hits[n].update(delta);
+        }
         this._fx.update(delta);
         Ship.update();
         this.fpsText.text = "" + Math.round(this._app.ticker.FPS);
@@ -115,6 +124,10 @@ export class Game {
 
     get ships(): Array<Ship> {
         return this._ships;
+    }
+
+    get hits(): Array<Hit> {
+        return this._hits;
     }
 
     get fx(): FX {

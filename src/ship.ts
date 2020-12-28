@@ -6,7 +6,7 @@ import { Shot } from "./shot";
 
 export class Ship extends Sprite {
     static shield: Sprite = new Sprite();
-    static emitter: ParticleEmitter = null;
+    static shieldEmitter: ParticleEmitter = null;
     static center: Sprite;
     static renderTexture: RenderTexture;
     static renderer;
@@ -17,13 +17,13 @@ export class Ship extends Sprite {
 
     constructor(x: number, y: number) {
         super();
-        if (Ship.emitter == null) {
+        if (Ship.shieldEmitter == null) {
             Ship.renderer = game.app.renderer;
             Ship.renderTexture = RenderTexture.create({ width: 300, height: 300 });
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            Ship.emitter = game.fx.getParticleEmitter("plasma-shield");
-            Ship.emitter.init(Ship.shield, true, 1);
+            Ship.shieldEmitter = game.fx.getParticleEmitter("plasma-shield");
+            Ship.shieldEmitter.init(Ship.shield, true, 1);
             Ship.center = new PIXI.Sprite(PIXI.Texture.WHITE);
             Ship.center.anchor.set(0.5, 0.5);
             Ship.center.position.x = Ship.renderTexture.width / 2;
@@ -49,10 +49,10 @@ export class Ship extends Sprite {
         const shot = new Shot(this.x, this.y, target.x, target.y, target.radius, target.scale.x);
         game.viewport.addChild(shot);
 
-        const light = game.fx.getEffectSequence("white-light");
-        light.init(game.viewport, 0, true, 0.2);
-        light.x = shot.x;
-        light.y = shot.y;
+        //const light = game.fx.getEffectSequence("white-light");
+        //light.init(game.viewport, 0, true, 0.2);
+        //light.x = shot.x;
+        //light.y = shot.y;
     }
 
     public dispose(): void {
