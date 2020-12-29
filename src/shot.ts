@@ -33,7 +33,7 @@ export class Shot extends Sprite {
         if (!Shot.initialized) {
             Shot.initialized = true;
             const s = new Sprite();
-            const shotEmitter = game.fx.getParticleEmitter("top-spaceship-engine");
+            const shotEmitter = game.fx.getParticleEmitter("plasma-shot");
             shotEmitter.init(s, true, 1);
             (async () => {
                 s.anchor.set(0.5, 0.5);
@@ -45,7 +45,7 @@ export class Shot extends Sprite {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     shotEmitter,
-                    400,
+                    2000,
                     this.nbSamples,
                     this.sampleWidth,
                     this.sampleHeight
