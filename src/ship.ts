@@ -69,7 +69,7 @@ export class Ship extends Sprite {
                 } else {
                     ++this.shieldStep;
                 }
-                if (!this.backwardAnim && Ship.shielda.textures.length >= this.shieldStep) {
+                if (!this.backwardAnim && this.shieldStep >= Ship.shielda.textures.length) {
                     this.backwardAnim = true;
                     this.shieldStep = Ship.shielda.textures.length - 1;
                 } else if (this.backwardAnim && this.shieldStep < 0) {
