@@ -5,8 +5,8 @@ import { Hit } from "./hit";
 import { Utils } from "./utils";
 
 export class Shot extends Sprite {
-    static initialized = false;
-    static shota: AnimatedSprite = null;
+    private static initialized = false;
+    private static shota: AnimatedSprite = null;
     private readonly sampleWidth = 600;
     private readonly sampleHeight = 600;
     private readonly nbSamples = 50;

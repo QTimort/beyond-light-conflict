@@ -3,8 +3,8 @@ import { game } from "./index";
 import { SpriteAnimationGenerator } from "./sprite-animation-generator";
 
 export class Hit extends Sprite {
-    static initialized = false;
-    static hita: AnimatedSprite = null;
+    private static initialized = false;
+    private static hita: AnimatedSprite = null;
     private readonly sampleWidth = 600;
     private readonly sampleHeight = 600;
     private hitStep = 0;

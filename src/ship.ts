@@ -5,12 +5,9 @@ import { Shot } from "./shot";
 import { SpriteAnimationGenerator } from "./sprite-animation-generator";
 
 export class Ship extends Sprite {
-    static shielda: AnimatedSprite = null;
-    static renderer = null;
-    public sprite: Sprite = new Sprite();
-    public x: number;
-    public y: number;
-    public radius: number;
+    private static shielda: AnimatedSprite = null;
+    private static renderer = null;
+    private radius: number;
     private readonly nbSamples = 50;
     private readonly sampleWidth = 600;
     private readonly sampleHeight = 600;
