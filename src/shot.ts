@@ -1,9 +1,15 @@
-import { Sprite, Texture } from "pixi.js";
+import { AnimatedSprite, Sprite } from "pixi.js";
 import { game } from "./index";
+import { SpriteAnimationGenerator } from "./sprite-animation-generator";
 import { Hit } from "./hit";
+import { Utils } from "./utils";
 
 export class Shot extends Sprite {
-    static shot: Texture = null;
+    static initialized = false;
+    static shota: AnimatedSprite = null;
+    private readonly sampleWidth = 600;
+    private readonly sampleHeight = 600;
+    private readonly nbSamples = 50;
     private speed: number;
     private dx: number;
     private dy: number;
@@ -11,6 +17,10 @@ export class Shot extends Sprite {
     private targetY: number;
     private targetRadius: number;
     private targetScaleX: number;
+    private shotStep = Utils.getRandomInt(this.nbSamples);
+    private timeElapsed = 0;
+    private backwardAnim = false;
+
     constructor(
         sourceX: number,
         sourceY: number,
@@ -20,10 +30,28 @@ export class Shot extends Sprite {
         targetScaleX: number
     ) {
         super();
-        if (Shot.shot == null) {
-            Shot.shot = PIXI.Texture.from("fx-light10");
+        if (!Shot.initialized) {
+            Shot.initialized = true;
+            const s = new Sprite();
+            const shotEmitter = game.fx.getParticleEmitter("top-spaceship-engine");
+            shotEmitter.init(s, true, 1);
+            (async () => {
+                s.anchor.set(0.5, 0.5);
+                s.position.x = this.sampleWidth / 2;
+                s.position.y = this.sampleHeight / 2;
+                await Utils.sleep(500);
+                Shot.shota = await SpriteAnimationGenerator.spriteAnimationGenerator(
+                    s,
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    shotEmitter,
+                    400,
+                    this.nbSamples,
+                    this.sampleWidth,
+                    this.sampleHeight
+                );
+            })();
         }
-        PIXI.Sprite.call(this, Shot.shot);
         game.shots.push(this);
 
         this.anchor.set(0.5, 0.5);
@@ -42,11 +70,32 @@ export class Shot extends Sprite {
 
         this.blendMode = PIXI.BLEND_MODES.ADD;
 
-        this.speed = 10;
-        this.tint = 0xd702d8;
+        this.scale.set(1, 0.4);
+
+        this.speed = Utils.getRandomInt2(5, 100);
+        this.alpha = 0.7;
     }
 
     public update(dt: number): void {
+        this.timeElapsed += dt;
+        if (this.timeElapsed > 5) {
+            if (Shot.shota != null) {
+                this.texture = Shot.shota.textures[this.shotStep];
+                if (this.backwardAnim) {
+                    --this.shotStep;
+                } else {
+                    ++this.shotStep;
+                }
+                if (!this.backwardAnim && Shot.shota.textures.length >= this.shotStep) {
+                    this.backwardAnim = true;
+                    this.shotStep = Shot.shota.textures.length - 1;
+                } else if (this.backwardAnim && this.shotStep < 0) {
+                    this.backwardAnim = false;
+                    this.shotStep = 0;
+                }
+            }
+            this.timeElapsed = 0;
+        }
         const pdx = this.targetX - this.x;
         const pdy = this.targetY - this.y;
         this.x += this.dx * this.speed * dt;

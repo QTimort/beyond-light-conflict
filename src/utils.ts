@@ -10,4 +10,8 @@ export class Utils {
     public static normalize(val: number, min: number, max: number): number {
         return (val - min) / (max - min);
     }
+
+    public static sleep(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
 }

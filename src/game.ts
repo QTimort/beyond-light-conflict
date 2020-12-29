@@ -46,11 +46,12 @@ export class Game {
         this._app.stage.addChild(this._debug);
         this._viewport.drag().pinch().wheel().decelerate();
     }
+
     public async init(): Promise<void> {
         await this.loadAssets();
 
         document.body.appendChild(this._app.view);
-        for (let i = 0; i < 10000; ++i) {
+        for (let i = 0; i < 100; ++i) {
             this._ships.push(
                 new Ship(Utils.getRandomInt(this._viewport.worldWidth), Utils.getRandomInt(this._viewport.worldHeight))
             );
@@ -81,7 +82,7 @@ export class Game {
             const loader = PIXI.Loader.shared;
             loader.add("fx_settings", "./assets/revolt-fx/default-bundle.json");
             loader.add("fx_spritesheet", "./assets/revolt-fx/spritesheet.json");
-            loader.add("fx_spritesheet_png", "./assets/revolt-fx/spritesheet.png");
+            loader.add("fx_spritesheet_png", "./assets/revolt-fx/revoltfx-spritesheet.png");
             loader.onComplete.once(() => {
                 res();
             });
@@ -114,7 +115,9 @@ export class Game {
             this._hits[n].update(delta);
         }
         this._fx.update(delta);
-        Ship.update();
+        for (let i = 0; i < this._ships.length; i++) {
+            this._ships[i].update(delta);
+        }
         this.fpsText.text = "" + Math.round(this._app.ticker.FPS);
     }
 
