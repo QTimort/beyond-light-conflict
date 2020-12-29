@@ -86,7 +86,7 @@ export class Shot extends Sprite {
                 } else {
                     ++this.shotStep;
                 }
-                if (!this.backwardAnim && Shot.shota.textures.length >= this.shotStep) {
+                if (!this.backwardAnim && this.shotStep >= Shot.shota.textures.length) {
                     this.backwardAnim = true;
                     this.shotStep = Shot.shota.textures.length - 1;
                 } else if (this.backwardAnim && this.shotStep < 0) {
